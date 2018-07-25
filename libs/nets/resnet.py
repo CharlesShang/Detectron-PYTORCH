@@ -93,11 +93,6 @@ class ResNet(nn.Module):
         if 'frozen' in kwargs:
             self.frozen(stage=kwargs['frozen'])
 
-        # using a small kernel to conv image 3x3 instead of 7x7
-        self.conv1_s = nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1, bias=False)
-        # self.layer1_retain = self._make_layer1_retain(block, 64, layers[0], use_dilation=True)
-        self.layer1_retain = self._make_layer1_retain(block, 64, layers[0], use_dilation=False)
-
     def de_frozen(self):
 
         for p in self.conv1.parameters(): p.requires_grad = True
@@ -122,8 +117,6 @@ class ResNet(nn.Module):
         if stage >= 1:
             for p in self.conv1.parameters(): p.requires_grad = False
             for p in self.bn1.parameters(): p.requires_grad = False
-            #if hasattr(self, 'conv1_s'):
-            #    for p in self.conv1_s.parameters(): p.requires_grad = False
         if stage >= 2:
             for p in self.layer1.parameters(): p.requires_grad = False
             # if hasattr(self, 'layer1_retain'):
@@ -191,70 +184,6 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def _share_param_layer1(self):
-
-        if not hasattr(self, 'layer1_retain'):
-            return
-
-        print('loading layer1 into layer1_retain ...')
-        layer1 = dict(self.layer1.named_parameters())
-        layer1_retain = dict(self.layer1_retain.named_parameters())
-        # print(sorted(layer1.keys()))
-        # print(sorted(layer1_retain.keys()))
-        for k, var in layer1_retain.items():
-            # print(var.size(), '<---', layer1[k].size())
-            var.requires_grad = False
-            var.copy_(layer1[k])
-
-        layer1 = dict(self.layer1.named_parameters())
-        layer1_retain = dict(self.layer1_retain.named_parameters())
-        for k, var in layer1_retain.items():
-            v1, v2 = var, layer1[k]
-            # print(v1.size(), '<-->', v2.size())
-            v = v1 - v2
-            assert -1e-6 < v.max() < 1e-6 and -1e-6 < v.min() < 1e-6
-
-        print('loading layer1 into layer1_retain ... done')
-
-    def _share_param_conv1(self):
-
-        if not hasattr(self, 'conv1_s'):
-            print('no conv1_s layer')
-            return
-
-        print('loading conv1 into conv1_s ...')
-        w = self.conv1.weight
-        # out, size, size, in
-        w = w.permute(0, 2, 3, 1)
-        w_np = w.data.numpy()
-
-        import cv2
-        import numpy as np
-        import os
-        ws = []
-        cnt = 0
-        for w_ in w_np:
-            im = 255 * (w_ - w_.min()) / (w_.max() - w_.min())
-            im = im.astype(np.uint8)
-            r, g, b = cv2.split(im)
-            im = cv2.merge((b, g, r))
-            im = cv2.resize(im, (70, 70), interpolation=cv2.INTER_NEAREST)
-            if os.path.exists('output/kernels/'):
-                cv2.imwrite('output/kernels/%d.jpg' % cnt, im)
-            cnt += 1
-            w_ = cv2.resize(w_, (5, 5))
-            w_ = cv2.resize(w_, (3, 3))
-            # ws.append(cv2.resize(w_, (3, 3)))
-            ws.append(w_)
-
-        ws = np.stack(ws)
-        # out, in, size, size
-        ws = ws.transpose(0, 3, 1, 2)
-        ws = torch.tensor(ws)
-
-        self.conv1_s.weight.data.copy_(ws)
-        print('loading conv1 into conv1_s ... done')
-
     def forward(self, x):
 
         endpoints = {}
@@ -284,8 +213,6 @@ def resnet50(pretrained=False, weight_path=None, **kwargs):
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet50']), strict=False)
-        model._share_param_layer1()
-        model._share_param_conv1()
     return model
 
 
@@ -298,8 +225,6 @@ def resnet101(pretrained=False, **kwargs):
     model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet101']), strict=False)
-        model._share_param_layer1()
-        model._share_param_conv1()
     return model
 
 

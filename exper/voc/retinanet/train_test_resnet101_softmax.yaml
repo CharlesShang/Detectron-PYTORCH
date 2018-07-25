@@ -1,4 +1,4 @@
-batch_size: 2
+batch_size: 1
 datasetname: pascal_voc
 data_dir: ./data/pascal_voc
 split: trainval_0712

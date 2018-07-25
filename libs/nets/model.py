@@ -135,16 +135,10 @@ class detection_model(nn.Module):
         assert rpn_logits.size()[0] == rpn_box.size()[0] == rpn_labels.size()[0], \
             'Dimension dont match %d vs %d vs %d' % (rpn_logits.size()[0], rpn_box.size()[0], rpn_labels.size()[0])
 
-        # WITHOUT OHEM, the current citypersons' best performance is obtained
         rpn_logits, rpn_labels, all_rpn_labels = \
             self._sample_faster_rcnn(rpn_logits, rpn_labels, rpn_prob, rpn_box,
                                      rpn_batch_size=256, rpn_fg_fraction=0.5)
-        # WITH OHEM, for caltech.
-        # Citypersons has not been evaluated
-        # RESULTS: --> NO USE
-        # rpn_logits, rpn_labels, all_rpn_labels = \
-        #     self._sample_faster_rcnn_OHEM(rpn_logits, rpn_labels, rpn_prob, rpn_box,
-        #                                   rpn_batch_size=256, rpn_fg_fraction=0.5)
+
         rpn_cls_loss = F.cross_entropy(rpn_logits, rpn_labels, ignore_index=-1)
 
         # build box loss

@@ -114,3 +114,6 @@ data/imagenet_weights/resnet101.pth
 *.tar
 *.bin
 *.out
+data/citypersons/cache
+data/citypersons/extend
+data/citypersons/patches
