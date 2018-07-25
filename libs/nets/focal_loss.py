@@ -68,7 +68,7 @@ class FocalLoss(_WeightedLoss):
 
     def sigmoid_loss(self, input, target):
 
-        fg_nums = target.data.gt(0).sum()
+        fg_nums = target.data.gt(0).sum().item()
         n, c = input.size(0), input.size(1)
         t = to_one_hot(target.data.cpu(), c + 1)  # [N,D]
         t = t[:, 1:]
