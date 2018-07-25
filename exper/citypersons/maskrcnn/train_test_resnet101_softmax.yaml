@@ -1,0 +1,60 @@
+batch_size: 1
+datasetname: citypersons
+data_dir: ./data/citypersons
+split: train
+split_test: val
+is_training: True
+model_type: 'maskrcnn'
+backbone: 'resnet101' # 'resnet101'
+# restore: ''
+display: 20
+log_image: 200
+data_workers: 8
+use_augment: False
+
+use_focal_loss: True
+num_classes: 2 # ('__background__', 'pedestrian', 'rider', 'sitting', 'unusual', 'group')
+class_activation: 'softmax'
+rpn_sample_strategy: 'simple' # 'traditional', 'simple', 'advanced'
+rpn_box_encoding: 'fastrcnn' # 'linear', 'fastrcnn'
+rpn_bg_threshold: 0.5
+rpn_fg_threshold: 0.7
+min_side: 1024
+max_side: 2048
+canvas_width: 2048
+canvas_height: 1024
+
+#min_side: 1332
+#max_side: 2666
+#canvas_width: 2688
+#canvas_height: 1344
+
+training_scale: [0.3, 0.5, 0.7, 1.0]
+
+maxpool5: True
+strides: [4, 8, 16, 32]
+f_keys: ['C2', 'C3', 'C4', 'C5']
+in_channels: [256, 512, 1024, 2048]
+
+## finer anchors, no intersection cross layers
+max_epoch: 15
+weight_decay: 0.0005
+lr: 0.001
+lr_decay_epoches: [6, 10, 12]
+anchor_scales: [
+    [2,  2.520,  3.175],
+    [4,  5.040,  6.349],
+    [8,  10.079, 12.700],
+    [16, 20.159, 25.398]
+]
+anchor_ratios: [1, 2.5] # height / width
+anchor_base: 16
+anchor_shift: [[0, 0], [0.5, 0]] # x_shift, y_shift
+score_threshold: 0.5
+max_det_num: 100
+overlap_threshold: 0.5
+with_segment: False
+
+class_weights: []
+segment_weights: []
+start_over: False

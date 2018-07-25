@@ -1,0 +1,36 @@
+input_size: [512, 512]
+batch_size: 1
+datasetname: coco
+split: minival2014_new
+data_dir: ./data/coco/
+is_training: False
+num_classes: 81
+class_activation: 'softmax'
+model_type: 'retinanet'
+backbone: 'resnet101' # 'resnet101'
+
+display: 20
+log_image: 20
+data_workers: 2
+score_threshold: 0.1
+overlap_threshold: 0.5
+#anchor_scales: [
+#    [1, 2, 4],
+#    [2, 4, 8],
+#    [4, 8, 16],
+#    [8, 16, 32],]
+
+## finer anchors, no intersection cross layers
+strides: [8, 16, 32, 64, 128]
+f_keys: ['C3', 'C4', 'C5', 'C6', 'C7']
+in_channels: [512, 1024, 2048, 256, 256]
+anchor_scales: [
+    [2, 2.828],
+    [4, 5.657],
+    [8, 11.314],
+    [16, 22.627],
+    [32, 45.255],
+]
+anchor_ratios: [0.333, 0.5, 1, 2.0, 3.0] # height / width
+num_channels: 256
+max_det_num: 200

@@ -1,0 +1,27 @@
+input_size: [320, 320]
+batch_size: 2
+split: train2014
+is_training: True
+#restore: 'output/maskrcnn_resnet50_coco_ep8.h5'
+lr: 0.01
+
+display: 1
+log_image: 20
+data_workers: 2
+score_threshold: 0.5
+overlap_threshold: 0.5
+anchor_base: 12 # area is anchor_base x anchor_base
+anchor_ratios: [1.0,] # height / width
+anchor_scales: [
+    [2,],
+    [4,],
+    [8,],
+    [16,],]
+loss_weights: [1, 0.1, 0.5]
+rpn_batch_size: 384
+rpn_sample_strategy: 'simple' # 'traditional', 'simple', 'advanced'
+rpn_box_encoding: 'linear' # 'linear', 'fastrcnn'
+rpn_bg_threshold: 0.3
+rpn_fg_threshold: 0.5
+bbweights: [1, 1, 1, 1]
+num_channels: 256
