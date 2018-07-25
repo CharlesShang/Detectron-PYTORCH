@@ -1,16 +1,15 @@
-batch_size: 2
+batch_size: 2 # can be larger than 1
 datasetname: citypersons
 data_dir: ./data/citypersons
 split: train
 split_test: val
 is_training: True
 model_type: 'retinanet'
-backbone: 'resnet50' # 'resnet101'
+backbone: 'resnet50' # or 'resnet101'
 # restore: ''
 display: 10
-log_image: 100
-data_workers: 4
-use_augment: False
+log_image: 100 # logging detection results in tensorboard every 100 iterations
+data_workers: 4 # how many threads that are used for loading training data
 
 use_focal_loss: True
 num_classes: 2 # ('__background__', 'pedestrian', 'rider', 'sitting', 'unusual', 'group')
@@ -23,7 +22,8 @@ min_side: 1024
 max_side: 2048
 canvas_width: 2048
 canvas_height: 1024
-training_scale: [0.3, 0.5, 0.7, 1.0]
+use_augment: False
+training_scale: [0.8, 1.0, 1.25] # used only when use_augment is true
 
 strides: [8, 16, 32, 64, 128]
 f_keys: ['C3', 'C4', 'C5', 'C6', 'C7']
@@ -32,16 +32,8 @@ in_channels: [512, 1024, 2048, 256, 256]
 ## finer anchors, no intersection cross layers
 max_epoch: 15
 weight_decay: 0.0001
-lr: 0.001
+lr: 0.001 # shrinking it if you find no right detections after 1k iterations
 lr_decay_epoches: [8, 12, 16]
-#anchor_scales: [
-#    [2, 2.828],
-#    [4, 5.657],
-#    [8, 11.314],
-#    [16, 22.627],
-#    [32, 45.255],
-#]
-#anchor_ratios: [0.333, 0.5, 1, 2.0, 3.0] # height / width
 anchor_scales: [
     [2,  2.520,  3.175],
     [4,  5.040,  6.349],
