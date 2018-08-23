@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 train_dir=exper/citypersons/retinanet/train_dir
-lr=0.0002
+lr=0.001
 train_log=${train_dir}/log_train_lr${lr}_resnet50_softmax.log
 test_log=${train_dir}/log_test_lr${lr}_resnet50_softmax.log
 restore=${train_dir}/retinanet_resnet50_citypersons_ep12.h5

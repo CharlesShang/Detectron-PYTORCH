@@ -31,7 +31,7 @@ in_channels: [512, 1024, 2048, 256, 256]
 
 ## finer anchors, no intersection cross layers
 max_epoch: 15
-weight_decay: 0.0001
+weight_decay: 0.0005
 lr: 0.001 # shrinking it if you find no right detections after 1k iterations
 lr_decay_epoches: [8, 12, 16]
 anchor_scales: [
