@@ -117,3 +117,5 @@ data/imagenet_weights/resnet101.pth
 data/citypersons/cache
 data/citypersons/extend
 data/citypersons/patches
+data/citypersons/visualization
+*events.out.tfevents*
