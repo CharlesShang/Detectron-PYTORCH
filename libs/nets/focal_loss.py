@@ -19,11 +19,12 @@ class FocalLoss(_WeightedLoss):
     """
     def __init__(self, weight=None, size_average=True, ignore_index=-100, gamma=2, alpha=0.25,
                  activation='sigmoid'):
-        super(FocalLoss, self).__init__(weight, size_average)
+        super(FocalLoss, self).__init__(weight)
         self.ignore_index = ignore_index
         self.gamma = gamma
         self.alpha = alpha
         self.activation = activation
+        self.size_average = size_average
 
     def softmax_loss(self, input, target):
         assert not target.requires_grad, \
@@ -111,8 +112,9 @@ def to_one_hot(labels, num_classes):
 class SigmoidCrossEntropy(_WeightedLoss):
 
     def __init__(self, weight=None, size_average=True, ignore_index=-100,):
-        super(SigmoidCrossEntropy, self).__init__(weight, size_average)
+        super(SigmoidCrossEntropy, self).__init__(weight)
         self.ignore_index = ignore_index
+        self.size_average = size_average
 
     def forward(self, input, target):
         fg_nums = target.data.gt(0).sum()
